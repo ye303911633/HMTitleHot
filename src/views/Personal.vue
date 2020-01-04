@@ -29,6 +29,25 @@
         </div>
       </div>
     </div>
+
+    <van-collapse v-model="activeNames"
+                  accordion>
+      <van-collapse-item title="我的关注"
+                         value="关注的用户"
+                         name="1">关注的用户<span>关注的用户</span></van-collapse-item>
+
+      <van-collapse-item title="我的跟帖"
+                         value="跟帖/回复"
+                         name="2">内容内容内容</van-collapse-item>
+      <van-collapse-item title="我的收藏"
+                         value="文章/视频"
+                         name="3">内内容内容内容容</van-collapse-item>
+      <van-collapse-item title="设置"
+                         icon="shop-o"
+                         right-icon="arrow-left"
+                         name="4">内容</van-collapse-item>
+    </van-collapse>
+
     <van-button type="warning"
                 @click="clearStorage">退出</van-button>
   </div>
@@ -40,7 +59,8 @@ export default {
     return {
       value: '',
       user: '',
-      isTrue: true
+      isTrue: true,
+      activeNames: '1'
     }
   },
   mounted () {
@@ -72,8 +92,6 @@ export default {
     },
 
     clearStorage () {
-      // console.log(1)
-
       this.$dialog.confirm({
         title: '提示',
         message: '你确定退出吗！'

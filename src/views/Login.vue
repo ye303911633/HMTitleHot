@@ -51,7 +51,9 @@ export default {
   },
   methods: {
     async getBtn () {
-      if (/^(\d{5,6})$|^(1\d{10})$/.test(this.user.username) && /^\S{3,16}$/.test(this.user.password)) {
+      let usernameReg = /^(\d{5,6})$|^(1\d{10})$/
+      let passwordReg = /^\S{3,16}$/
+      if (usernameReg.test(this.user.username) && passwordReg.test(this.user.password)) {
         let res = await login(this.user)
         // console.log(res)
         if (res.data.message === '登录成功') {
