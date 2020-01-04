@@ -3,10 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import {Button} from 'vant'
+import {Button, Field, Row, Col, Search, Image, Switch, Dialog, Icon, Toast, Popup} from 'vant'
 // import 'vant/lib/index.css'
+// import 'vant/lib/icon/local.css'
 
-Vue.use(Button)
+Vue.use(Button).use(Field).use(Row).use(Col).use(Search).use(Image).use(Switch).use(Dialog).use(Icon).use(Toast).use(Popup)
 
 Vue.config.productionTip = false
 

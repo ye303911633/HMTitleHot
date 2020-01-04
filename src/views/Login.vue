@@ -5,16 +5,27 @@
       <div class="logo"><span class="iconfont iconnew"></span></div>
     </div>
     <!--      用户名-->
-    <hminput placeholder="用户名/手机号"
+    <!-- <hminput placeholder="用户名/手机号"
              v-model="user.username"
              :rules='/^(\d{5,6})$|^(1\d{10})$/'
-             msg='用户名或者手机号输入不正确'></hminput>
+             msg='用户名或者手机号输入不正确'></hminput> -->
 
     <!--      密码-->
-    <hminput placeholder="密码"
+    <!-- <hminput placeholder="密码"
              v-model="user.password"
              :rules='/^\S{3,16}$/'
-             msg='请输入3-16位的密码'></hminput>
+             msg='请输入3-16位的密码'></hminput> -->
+
+    <van-field v-model="user.username"
+               required
+               placeholder="用户名" />
+
+    <van-field v-model="user.password"
+               type="password"
+               required
+               @keyup.enter="getBtn()"
+               placeholder="密码" />
+
     <hmbutton @click="getBtn">登录</hmbutton>
   </div>
 </template>
@@ -25,9 +36,9 @@ import hmbutton from '../components/hmbutton'
 import { login } from '@/apis/loginApi'
 
 export default {
-  name: 'login',
   data () {
     return {
+      value: '',
       user: {
         username: '',
         password: ''
@@ -42,8 +53,13 @@ export default {
     async getBtn () {
       if (/^(\d{5,6})$|^(1\d{10})$/.test(this.user.username) && /^\S{3,16}$/.test(this.user.password)) {
         let res = await login(this.user)
-        // alert(res)
-        console.log(res)
+        // console.log(res)
+        if (res.data.message === '登录成功') {
+          localStorage.setItem('Personal', JSON.stringify(res.data))
+          this.$router.push({ name: 'Personal' })
+        } else {
+          this.$toast.fail('账号或密码错误')
+        }
       }
     }
   }
