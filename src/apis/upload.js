@@ -1,9 +1,9 @@
 import axios from '@/utils/axiosConfig'
 
-export const login = (data) => {
+export const uploadImg = (data) => {
   return axios({
     method: 'post',
-    url: '/login',
+    url: '/upload',
     data
   })
 }

@@ -13,16 +13,26 @@ let router = new Router({
       component: Login
     },
     {
-      path: '/personal',
+      path: '/personal/:id',
       name: 'Personal',
       component: () => import('@/views/Personal')
+    },
+    {
+      path: '/editprofile',
+      name: 'Editprofile',
+      component: () => import('@/views/Editprofile')
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: () => import('@/views/Register')
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   if (to.path.indexOf('/personal') === 0) {
-    let token = localStorage.getItem('Personal')
+    let token = localStorage.getItem('Personal_token')
     if (token) {
       next()
     } else {

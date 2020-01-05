@@ -25,6 +25,10 @@
                required
                @keyup.enter="getBtn()"
                placeholder="密码" />
+    <div class="RegisterBox">
+      <p>没有账号? <router-link to="Register">注册账号</router-link>
+      </p>
+    </div>
 
     <hmbutton @click="getBtn">登录</hmbutton>
   </div>
@@ -33,7 +37,7 @@
 <script>
 import hminput from '../components/hminput'
 import hmbutton from '../components/hmbutton'
-import { login } from '@/apis/loginApi'
+import { login } from '@/apis/users'
 
 export default {
   data () {
@@ -57,8 +61,9 @@ export default {
         let res = await login(this.user)
         // console.log(res)
         if (res.data.message === '登录成功') {
-          localStorage.setItem('Personal', JSON.stringify(res.data))
-          this.$router.push({ name: 'Personal' })
+          localStorage.setItem('Personal_token', res.data.data.token)
+          localStorage.setItem('Personal', JSON.stringify(res.data.data.user))
+          this.$router.push({ path: `/personal/${res.data.data.user.id}` })
         } else {
           this.$toast.fail('账号或密码错误')
         }
@@ -88,5 +93,11 @@ export default {
     font-size: 126 / 360 * 100vw;
     color: #d81e06;
   }
+}
+.RegisterBox {
+  position: absolute;
+  margin-top: 10px;
+  right: 10px;
+  font-size: 14px;
 }
 </style>
