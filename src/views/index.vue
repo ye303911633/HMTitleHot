@@ -19,17 +19,68 @@
       <van-tabs v-model="active"
                 sticky
                 swipeable>
-        <van-tab title="标签 1">内容 1</van-tab>
+        <van-tab v-for="(item,index) in category"
+                 :key="index"
+                 :title="item.name">
+          <hmmodel v-for='items in item.postList'
+                   :key="items.id"
+                   :post="items"></hmmodel>
+        </van-tab>
       </van-tabs>
     </div>
+
   </div>
 </template>
 
 <script>
+
+import { getCate } from '@/apis/cate.js'
+import { getPost } from '@/apis/article.js'
+import hmmodel from '@/components/hmmodel.vue'
+
 export default {
+  components: {
+    hmmodel
+  },
   data () {
     return {
-      active: ''
+      active: localStorage.getItem('token') ? 1 : 0,
+      id: '',
+      category: ''
+    }
+  },
+  async mounted () {
+    // this.id = JSON.parse(localStorage.getItem('token') || '{}').id
+    // console.log(this.id)
+    let res = await getCate()
+    this.category = res.data.data
+    this.category = this.category.map(value => {
+      return {
+        ...value,
+        postList: [],
+        pageSize: 10,
+        pageIndex: 1
+      }
+    })
+    console.log(this.category)
+
+    let res1 = await getPost({
+      category: this.category[this.active].id,
+      pageIndex: this.category[this.active].pageIndex,
+      pageSize: this.category[this.active].pageSize
+    })
+    this.category[this.active].postList = res1.data.data
+    console.log(this.category)
+  },
+  watch: {
+    async active () {
+      let res1 = await getPost({
+        category: this.category[this.active].id,
+        pageIndex: this.category[this.active].pageIndex,
+        pageSize: this.category[this.active].pageSize
+      })
+      this.category[this.active].postList = res1.data.data
+      console.log(this.category)
     }
   }
 }
