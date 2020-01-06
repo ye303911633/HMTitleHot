@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import {getUser} from '@/apis/users'
+import { getUser } from '@/apis/users'
 export default {
   data () {
     return {
@@ -106,15 +106,15 @@ export default {
         title: '提示',
         message: '你确定退出吗！'
       }).then(() => {
-        localStorage.setItem('Personal_token', '')
-        this.$router.push({name: 'Login'})
+        localStorage.removeItem('Personal_token')
+        this.$router.push({ name: 'Login' })
       }).catch(() => {
 
       })
     },
 
     editProfile () {
-      this.$router.push({name: 'Editprofile', query: {id: this.user.id}})
+      this.$router.push({ name: 'Editprofile', query: { id: this.user.id } })
     }
   }
 
@@ -162,7 +162,7 @@ export default {
   width: 100%;
   bottom: 0;
 }
-  .btnColor () {
-    background-color: #f2f2f2;
-  }
+.btnColor () {
+  background-color: #f2f2f2;
+}
 </style>

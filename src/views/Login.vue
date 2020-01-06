@@ -18,6 +18,7 @@
 
     <van-field v-model="user.username"
                required
+               ref="nameFocus"
                placeholder="用户名" />
 
     <van-field v-model="user.password"
@@ -69,6 +70,9 @@ export default {
         }
       }
     }
+  },
+  mounted () {
+    this.$refs.nameFocus.focus()
   }
 }
 </script>
