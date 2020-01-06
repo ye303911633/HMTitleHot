@@ -31,16 +31,23 @@
 
     <van-cell title="密码"
               is-link
-              :value="user.password"
+              :value="psdBox"
               @click="show1=!show1" />
     <van-dialog v-model="show1"
                 title="密码"
                 show-cancel-button
-                @confirm="getPassword">
-      <van-field :value="user.password"
-                 ref="psd"
+                @confirm="getPassword"
+                :before-close="beforeClose">
+      <van-field ref="oldPass"
                  required
-                 label="密码" />
+                 @blur="yuanmima"
+                 label="原密码" />
+      <van-field ref="Ack"
+                 required
+                 label="新密码" />
+      <van-field ref="newPass"
+                 required
+                 label="确认密码" />
     </van-dialog>
 
     <van-cell title="性别"
@@ -69,10 +76,10 @@ export default {
       value: '',
       user: {
         nickname: '',
-        password: '****',
+        password: '',
         gender: ''
       },
-      // columns: ['女', '男'],
+      psdBox: '******',
       show: false,
       show1: false,
       show2: false,
@@ -103,6 +110,7 @@ export default {
         }
       }
     },
+    // 修改昵称
     async getUsername () {
       let name = this.$refs.nick.$refs.input.value
       let res = await uploadFile(this.user.id, { nickname: name })
@@ -113,16 +121,53 @@ export default {
         this.$toast.fail(res.data.message)
       }
     },
+    // 修改密码
     async getPassword () {
-      let psd = this.$refs.nick.$refs.input.value
-      let res = await uploadFile(this.user.id, { password: psd })
-      if (res.data.message === '修改成功') {
-        this.$toast.success(res.data.message)
-        this.user.nickname = res.data.data.nickname
+      let oldpass = this.$refs.oldPass.$refs.input.value
+      let Ack = this.$refs.Ack.$refs.input.value
+      let newpass = this.$refs.newPass.$refs.input.value
+
+      if (this.user.password === oldpass) {
+        if (Ack === newpass) {
+          let res = await uploadFile(this.user.id, { password: newpass })
+          if (res.data.message === '修改成功') {
+            this.$toast.success(res.data.message)
+            this.user.password = '******'
+          } else {
+            this.$toast.fail(res.data.message)
+          }
+        } else {
+          this.$toast.fail('确认密码和新密码不一样！')
+        }
       } else {
-        this.$toast.fail(res.data.message)
+        this.$toast.fail('原密码错误！')
       }
     },
+    beforeClose (action, done) {
+      console.log(action)
+      if (action === 'cancel') {
+        console.log('cancel')
+        done()
+      } else if (action === 'confirm') {
+        let oldpass = this.$refs.oldPass.$refs.input.value
+        if (oldpass !== this.user.password) {
+          this.$toast.fail('原密码错误！')
+          this.$refs.oldPass.focus()
+          done(false)
+        } else {
+          done()
+        }
+      }
+    },
+    yuanmima () {
+      let oldpass = this.$refs.oldPass.$refs.input.value
+      if (oldpass !== this.user.password) {
+        this.$toast.fail('原密码错误！')
+        this.$refs.oldPass.focus()
+      }
+    },
+
+    // 修改性别
     async getGender () {
       let res = await uploadFile(this.user.id, { gender: this.user.gender })
       console.log(res)

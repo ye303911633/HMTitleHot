@@ -107,7 +107,7 @@ export default {
         message: '你确定退出吗！'
       }).then(() => {
         localStorage.removeItem('Personal_token')
-        this.$router.push({ name: 'Login' })
+        this.$router.push({ name: 'index' })
       }).catch(() => {
 
       })
