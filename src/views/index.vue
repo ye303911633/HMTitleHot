@@ -11,7 +11,8 @@
       </div>
 
       <div class="user">
-        <van-icon name="contact" />
+        <van-icon name="contact"
+                  @click="goLogin" />
       </div>
     </div>
 
@@ -49,6 +50,15 @@ export default {
       category: ''
     }
   },
+  methods: {
+    goLogin () {
+      if (localStorage.getItem('token')) {
+        this.$router.push({ path: `/personal/${JSON.parse(localStorage.getItem('Personal')).id}` })
+      } else {
+        this.$router.push({ name: 'Login' })
+      }
+    }
+  },
   async mounted () {
     // this.id = JSON.parse(localStorage.getItem('token') || '{}').id
     // console.log(this.id)
@@ -62,25 +72,23 @@ export default {
         pageIndex: 1
       }
     })
-    console.log(this.category)
-
     let res1 = await getPost({
       category: this.category[this.active].id,
       pageIndex: this.category[this.active].pageIndex,
       pageSize: this.category[this.active].pageSize
     })
     this.category[this.active].postList = res1.data.data
-    console.log(this.category)
   },
   watch: {
     async active () {
-      let res1 = await getPost({
-        category: this.category[this.active].id,
-        pageIndex: this.category[this.active].pageIndex,
-        pageSize: this.category[this.active].pageSize
-      })
-      this.category[this.active].postList = res1.data.data
-      console.log(this.category)
+      if (this.category[this.active].postList.length === 0) {
+        let res1 = await getPost({
+          category: this.category[this.active].id,
+          pageIndex: this.category[this.active].pageIndex,
+          pageSize: this.category[this.active].pageSize
+        })
+        this.category[this.active].postList = res1.data.data
+      }
     }
   }
 }

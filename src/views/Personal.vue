@@ -1,5 +1,8 @@
 <template>
   <div class="personal">
+    <van-nav-bar left-text="返回"
+                 left-arrow
+                 @click-left="onClickLeft" />
     <div class="top">
       <!-- 头像 -->
       <div class="top-left">
@@ -31,19 +34,21 @@
     <van-collapse v-model="activeNames"
                   accordion>
       <van-collapse-item title="我的关注"
-                         class="btnColor"
                          value="关注的用户"
-                         name="1">关注的用户<span>关注的用户</span></van-collapse-item>
+                         icon="plus"
+                         right-icon="success"
+                         name="1">关注的用户
+      </van-collapse-item>
 
       <van-collapse-item title="我的跟帖"
                          value="跟帖/回复"
                          name="2">内容内容内容</van-collapse-item>
+
       <van-collapse-item title="我的收藏"
                          value="文章/视频"
                          name="3">内内容内容内容容</van-collapse-item>
+
       <van-collapse-item title="设置"
-                         icon="shop-o"
-                         right-icon="arrow-left"
                          name="4">内容</van-collapse-item>
     </van-collapse>
 
@@ -66,7 +71,7 @@ export default {
       value: '',
       user: '',
       isTrue: true,
-      activeNames: '1',
+      activeNames: '',
       oImg: 'http://127.0.0.1:3000',
       oImgSrc: '',
       active: ''
@@ -106,8 +111,8 @@ export default {
         title: '提示',
         message: '你确定退出吗！'
       }).then(() => {
-        localStorage.removeItem('Personal_token')
-        this.$router.push({ name: 'index' })
+        localStorage.removeItem('token')
+        this.$router.push({ name: 'Index' })
       }).catch(() => {
 
       })
@@ -115,6 +120,10 @@ export default {
 
     editProfile () {
       this.$router.push({ name: 'Editprofile', query: { id: this.user.id } })
+    },
+
+    onClickLeft () {
+      this.$router.go(-1)
     }
   }
 
@@ -162,7 +171,13 @@ export default {
   width: 100%;
   bottom: 0;
 }
-.btnColor () {
-  background-color: #f2f2f2;
+/deep/.van-cell--clickable,
+.van-nav-bar {
+  background: #f2f2f2;
+}
+
+/deep/.van-icon-arrow-left,
+.van-nav-bar__text {
+  color: #000;
 }
 </style>

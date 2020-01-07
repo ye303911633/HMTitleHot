@@ -8,6 +8,14 @@ export const login = (data) => {
   })
 }
 
+export const register = (data) => {
+  return axios({
+    method: 'post',
+    url: '/register',
+    data
+  })
+}
+
 export const getUser = (id) => {
   return axios({
     method: 'get',

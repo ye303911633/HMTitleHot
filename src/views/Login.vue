@@ -1,20 +1,10 @@
 <template>
   <div class="login">
     <div class="container">
-      <div class="close"><span class="iconfont iconicon-test"></span></div>
+      <div class="close"
+           @click="goBack"><span class="iconfont iconicon-test"></span></div>
       <div class="logo"><span class="iconfont iconnew"></span></div>
     </div>
-    <!--      用户名-->
-    <!-- <hminput placeholder="用户名/手机号"
-             v-model="user.username"
-             :rules='/^(\d{5,6})$|^(1\d{10})$/'
-             msg='用户名或者手机号输入不正确'></hminput> -->
-
-    <!--      密码-->
-    <!-- <hminput placeholder="密码"
-             v-model="user.password"
-             :rules='/^\S{3,16}$/'
-             msg='请输入3-16位的密码'></hminput> -->
 
     <van-field v-model="user.username"
                required
@@ -62,13 +52,16 @@ export default {
         let res = await login(this.user)
         // console.log(res)
         if (res.data.message === '登录成功') {
-          localStorage.setItem('Personal_token', res.data.data.token)
+          localStorage.setItem('token', res.data.data.token)
           localStorage.setItem('Personal', JSON.stringify(res.data.data.user))
-          this.$router.push({ path: `/personal/${res.data.data.user.id}` })
+          this.$router.push({ name: 'Index' })
         } else {
           this.$toast.fail('账号或密码错误')
         }
       }
+    },
+    goBack () {
+      this.$router.go(-1)
     }
   },
   mounted () {
