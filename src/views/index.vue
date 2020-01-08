@@ -23,9 +23,17 @@
         <van-tab v-for="(item,index) in category"
                  :key="index"
                  :title="item.name">
-          <hmmodel v-for='items in item.postList'
-                   :key="items.id"
-                   :post="items"></hmmodel>
+          <van-list v-model="item.loading"
+                    :offset='5'
+                    :immediate-check='false'
+                    :finished="item.finished"
+                    loading-text='玩命加载中..'
+                    finished-text="没有更多了!"
+                    @load="onLoad">
+            <hmmodel v-for='items in item.postList'
+                     :key="items.id"
+                     :post="items"></hmmodel>
+          </van-list>
         </van-tab>
       </van-tabs>
     </div>
@@ -57,6 +65,41 @@ export default {
       } else {
         this.$router.push({ name: 'Login' })
       }
+    },
+    onLoad () {
+      this.category[this.active].pageIndex++
+      console.log(this.category[this.active].pageIndex)
+
+      setTimeout(() => {
+        this.init()
+      }, 2000)
+    },
+    // onRefresh () {
+    //   // 重新第一页加载数据
+    //   this.category[this.active].pageIndex = 1
+    //   // this.cateList[this.active].articleList = []
+    //   this.category[this.active].articleList.length = 0
+    //   this.init(() => {
+    //     setTimeout(() => {
+    //       this.category[this.active].isLoading = false
+    //       // 将下拉刷新的结束标识进行重置,如果没有重置,那么有可能就不能再上拉加载更多数据了
+    //       this.category[this.active].finished = false
+    //     }, 1000)
+    //   })
+    //   // 加载成功后将isLoading重置为false
+    // },
+    async init () {
+      let res1 = await getPost({
+        category: this.category[this.active].id,
+        pageIndex: this.category[this.active].pageIndex,
+        pageSize: this.category[this.active].pageSize
+      })
+      this.category[this.active].loading = false
+      if (res1.data.data.length < this.category[this.active].pageSize) {
+        this.category[this.active].finished = true
+      }
+      this.category[this.active].postList.push(...res1.data.data)
+      console.log(this.category)
     }
   },
   async mounted () {
@@ -69,25 +112,19 @@ export default {
         ...value,
         postList: [],
         pageSize: 10,
-        pageIndex: 1
+        pageIndex: 1,
+        loading: false,
+        finished: false,
+        isLoading: false
       }
     })
-    let res1 = await getPost({
-      category: this.category[this.active].id,
-      pageIndex: this.category[this.active].pageIndex,
-      pageSize: this.category[this.active].pageSize
-    })
-    this.category[this.active].postList = res1.data.data
+    this.init()
   },
   watch: {
+    // 动态监听栏目的变化而发起请求
     async active () {
       if (this.category[this.active].postList.length === 0) {
-        let res1 = await getPost({
-          category: this.category[this.active].id,
-          pageIndex: this.category[this.active].pageIndex,
-          pageSize: this.category[this.active].pageSize
-        })
-        this.category[this.active].postList = res1.data.data
+        this.init()
       }
     }
   }

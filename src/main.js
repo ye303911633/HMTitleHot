@@ -28,12 +28,37 @@ import {
   ActionSheet,
   Picker,
   Tab,
-  Tabs
+  Tabs,
+  List
 } from 'vant'
 // import 'vant/lib/index.css'
 // import 'vant/lib/icon/local.css'
 
-Vue.use(Button).use(Field).use(Row).use(Col).use(Search).use(Image).use(Switch).use(Dialog).use(Icon).use(Toast).use(Popup).use(Collapse).use(CollapseItem).use(NavBar).use(Cell).use(CellGroup).use(Tabbar).use(TabbarItem).use(Uploader).use(Area).use(ActionSheet).use(Picker).use(Tab).use(Tabs)
+Vue.use(Button)
+  .use(Field)
+  .use(Row)
+  .use(Col)
+  .use(Search)
+  .use(Image)
+  .use(Switch)
+  .use(Dialog)
+  .use(Icon)
+  .use(Toast)
+  .use(Popup)
+  .use(Collapse)
+  .use(CollapseItem)
+  .use(NavBar)
+  .use(Cell)
+  .use(CellGroup)
+  .use(Tabbar)
+  .use(TabbarItem)
+  .use(Uploader)
+  .use(Area)
+  .use(ActionSheet)
+  .use(Picker)
+  .use(Tab)
+  .use(Tabs)
+  .use(List)
 
 Vue.config.productionTip = false
 
