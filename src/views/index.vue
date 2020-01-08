@@ -30,9 +30,12 @@
                     loading-text='玩命加载中..'
                     finished-text="没有更多了!"
                     @load="onLoad">
-            <hmmodel v-for='items in item.postList'
-                     :key="items.id"
-                     :post="items"></hmmodel>
+            <van-pull-refresh v-model="item.isLoading" @refresh="onRefresh">
+              <hmmodel v-for='items in item.postList'
+                       :key="items.id"
+                       :post="items"></hmmodel>
+            </van-pull-refresh>
+
           </van-list>
         </van-tab>
       </van-tabs>
@@ -53,12 +56,19 @@ export default {
   },
   data () {
     return {
+      /*
+      *   判断本地存储中是否有token值，有则表示登录状态,则头条栏目的索引为1， 没有则表示未登录状态,头条栏目的索引值为0
+      * */
       active: localStorage.getItem('token') ? 1 : 0,
       id: '',
       category: ''
     }
   },
   methods: {
+    /*
+    *   当点击用户图标时，触发goLogin方法, 通过本地的localStorage判断当前的用户是否登录，登录状态，则拿到用户的id 跳转至个人中心
+    *   否则进入登录页面
+    * */
     goLogin () {
       if (localStorage.getItem('token')) {
         this.$router.push({ path: `/personal/${JSON.parse(localStorage.getItem('Personal')).id}` })
@@ -66,63 +76,92 @@ export default {
         this.$router.push({ name: 'Login' })
       }
     },
+    // 页面下拉刷新 加载数据
     onLoad () {
       this.category[this.active].pageIndex++
-      console.log(this.category[this.active].pageIndex)
-
       setTimeout(() => {
         this.init()
       }, 2000)
     },
-    // onRefresh () {
-    //   // 重新第一页加载数据
-    //   this.category[this.active].pageIndex = 1
-    //   // this.cateList[this.active].articleList = []
-    //   this.category[this.active].articleList.length = 0
-    //   this.init(() => {
-    //     setTimeout(() => {
-    //       this.category[this.active].isLoading = false
-    //       // 将下拉刷新的结束标识进行重置,如果没有重置,那么有可能就不能再上拉加载更多数据了
-    //       this.category[this.active].finished = false
-    //     }, 1000)
-    //   })
-    //   // 加载成功后将isLoading重置为false
-    // },
+    // 页面上拉刷新 加载数据
+    onRefresh () {
+      this.category[this.active].pageIndex = 1
+      this.category[this.active].postList.length = 0
+      setTimeout(() => {
+        this.init()
+      }, 1000)
+    },
+    // 异步封装方法
     async init () {
+      // 调用getPost接口： 把category的id, pageIndex, pageSize 传到后台
       let res1 = await getPost({
         category: this.category[this.active].id,
         pageIndex: this.category[this.active].pageIndex,
         pageSize: this.category[this.active].pageSize
       })
-      this.category[this.active].loading = false
+
+      // 判断loading是否存在：存在loading时，就把loading的状态改成false，就是允许继续下拉加载数据
+      if (this.category[this.active].loading) {
+        this.category[this.active].loading = false
+      }
+
+      // 判断isloading是否存在：存在isLoading，则把isLoading的状态改成false, 表示上拉加载数据完成
+      if (this.category[this.active].isLoading) {
+        this.category[this.active].isLoading = false
+      }
+
+      // 判断从后台传入的数据的长度 小于 当前显示的页面数时，表示后台没有更多数据了，则需要把finished的状态改成true,停止继续下拉
       if (res1.data.data.length < this.category[this.active].pageSize) {
         this.category[this.active].finished = true
+      } else {
+        // 当后台传入的数据 不小于 当前显示的页面数时， 表示后台有更多数据，则把finished的状态改成true，可以继续下拉刷新
+        this.category[this.active].finished = false
       }
+
+      // 把后台返回的 id,页面的索引,以及当前页的数量push到 当前的category的postlist里面
       this.category[this.active].postList.push(...res1.data.data)
-      console.log(this.category)
     }
   },
+
+  // 当页面加载完成时，执行的钩子函数
   async mounted () {
     // this.id = JSON.parse(localStorage.getItem('token') || '{}').id
     // console.log(this.id)
+
+    // 调用getCate接口
     let res = await getCate()
+
+    // 把后台拿到的数据 赋值到this.category
     this.category = res.data.data
+
+    /*
+    * 对数据进行改造，把拿到的数据 在后面继续追加 postlist pageIndex pageSize loading finished isLoading 属性
+    * 方便后期的数据维护，让所有栏目对应的数据 互不影响
+    * */
     this.category = this.category.map(value => {
       return {
         ...value,
         postList: [],
-        pageSize: 10,
+        pageSize: 5,
         pageIndex: 1,
         loading: false,
         finished: false,
         isLoading: false
       }
     })
+
+    // 调用init函数， 拿到当前的this.active所在的栏目位置 进行数据交互 并对loading isLoading finished 的状态做出回应
     this.init()
   },
+
+  // 监听状态
   watch: {
     // 动态监听栏目的变化而发起请求
     async active () {
+      /*
+      * 当 当前的栏目数据的长度为0时，则表示该栏目没有加载数据，需要调用init函数 进行数据交互
+      * 否则 不做出回应
+      * */
       if (this.category[this.active].postList.length === 0) {
         this.init()
       }

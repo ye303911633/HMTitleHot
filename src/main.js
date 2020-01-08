@@ -29,7 +29,8 @@ import {
   Picker,
   Tab,
   Tabs,
-  List
+  List,
+  PullRefresh
 } from 'vant'
 // import 'vant/lib/index.css'
 // import 'vant/lib/icon/local.css'
@@ -59,6 +60,7 @@ Vue.use(Button)
   .use(Tab)
   .use(Tabs)
   .use(List)
+  .use(PullRefresh)
 
 Vue.config.productionTip = false
 
