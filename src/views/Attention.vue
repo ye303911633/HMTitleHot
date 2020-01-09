@@ -11,8 +11,7 @@
 
 <script>
 import hmattention from '../components/hmattention'
-import {getUserAttention} from '@/apis/attention.js'
-import {unFollows} from '@/apis/article.js'
+import {unFollows, getUserAttention} from '@/apis/article.js'
 export default {
   name: 'Attention',
   data () {

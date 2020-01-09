@@ -30,7 +30,8 @@ import {
   Tab,
   Tabs,
   List,
-  PullRefresh
+  PullRefresh,
+  SwipeCell
 } from 'vant'
 // import 'vant/lib/index.css'
 // import 'vant/lib/icon/local.css'
@@ -62,6 +63,7 @@ Vue.use(Button)
   .use(Tabs)
   .use(List)
   .use(PullRefresh)
+  .use(SwipeCell)
 
 Vue.config.productionTip = false
 

@@ -15,7 +15,7 @@
       </div>
       <div class="contentBox" v-html="articleUser.content"></div>
       <div class="contentFlooter">
-        <div class="zan borderBox" @click="clickZanBtn" :class="{active:articleUser.like_length === 1?true:false}"><van-icon name="good-job-o" style="font-size: 20px"/>点赞{{articleUser.like_length}}</div>
+        <div class="zan borderBox" @click="clickZanBtn" :class="{active1:dianzan}"><van-icon name="good-job-o" style="font-size: 20px"/>点赞{{articleUser.like_length}}</div>
         <div class="weChat borderBox iconfont"><span>&#xe620;</span> 微信</div>
       </div>
     </div>
@@ -42,7 +42,8 @@ export default {
     return {
       articleUser: {
         user: ''
-      }
+      },
+      dianzan: false
     }
   },
   async mounted () {
@@ -61,13 +62,13 @@ export default {
           let res = await unFollows(this.articleUser.user.id)
           if (res.data.message === '取消关注成功') {
             this.$toast.fail(res.data.message)
-            this.articleUser.has_follow = !this.articleUser.has_follow
+            this.articleUser.has_follow = false
           }
         } else {
           let res = await getFollows(this.articleUser.user.id)
           if (res.data.message === '已关注' || res.data.message === '关注成功') {
             this.$toast.fail(res.data.message)
-            this.articleUser.has_follow = !this.articleUser.has_follow
+            this.articleUser.has_follow = true
             console.log(this.articleUser.has_follow)
           }
         }
@@ -84,15 +85,15 @@ export default {
       let res = await clickZan(this.$route.params.id)
       if (res.data.message === '点赞成功') {
         this.$toast.success(res.data.message)
-        this.articleUser.like_length++
+        this.dianzan = true
+        ++this.articleUser.like_length
       } else if (res.data.message === '取消成功') {
         this.$toast.fail(res.data.message)
-        this.articleUser.like_length--
+        this.dianzan = false
+        --this.articleUser.like_length
       }
     }
-
   }
-
 }
 </script>
 
@@ -167,8 +168,8 @@ export default {
       display: flex;
       justify-content: space-around;
       .zan{
-        &.active{
-          color: crimson;
+        &.active1{
+          color: red;
         }
       }
       .borderBox{
@@ -190,7 +191,7 @@ export default {
   .follow-up{
     width: 100%;
     text-align: center;
-    padding: 10px 0;
+    padding: 10px 0 50px 0;
     margin: 20px 0;
     border-top: 3px solid #e4e4e4;
     h1{

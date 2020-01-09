@@ -42,3 +42,25 @@ export const clickZan = (id) => {
     url: `/post_like/${id}`
   })
 }
+
+// 用户关注列表
+export const getUserAttention = () => {
+  return axios({
+    url: '/user_follows'
+  })
+}
+
+// 获取收藏文章列表
+export const getPostList = () => {
+  return axios({
+    url: '/user_star'
+  })
+}
+
+// 评论列表
+export const getCommentList = (id, data) => {
+  return axios({
+    url: `/post_comment/${id}`,
+    data
+  })
+}

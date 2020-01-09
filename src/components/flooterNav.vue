@@ -3,7 +3,7 @@
       <input type="text" placeholder="写跟帖">
       <div class="right">
         <van-icon name="chat-o" />
-        <i class="redBox">100</i>
+        <i class="redBox" @click="goComment(getColl)">{{getColl.comment_length}}</i>
         <van-icon class="van-collect" :class="{collect:getColl.has_star}" name="star-o" @click="getCollect(getColl)"
         />
         <i class="iconfont">&#xe607;</i>
@@ -25,6 +25,9 @@ export default {
       } else if (res.data.message === '取消成功') {
         this.getColl.has_star = !this.getColl.has_star
       }
+    },
+    goComment (data) {
+      this.$router.push({path: `/comment/${data.id}`})
     }
   }
 }
@@ -42,6 +45,7 @@ export default {
     justify-content: center;
     align-items: center;
     border: 1px solid #e5e5e5;
+    background: #fff;
     input{
       border-radius: 20px;
       text-indent: 20px;

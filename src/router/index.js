@@ -45,6 +45,11 @@ let router = new Router({
       path: '/collect',
       name: 'Collect',
       component: () => import('@/views/Collect')
+    },
+    {
+      path: '/comment/:id',
+      name: 'Comment',
+      component: () => import('@/views/Comment')
     }
   ]
 })
