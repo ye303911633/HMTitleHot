@@ -33,7 +33,7 @@
             <van-pull-refresh v-model="item.isLoading" @refresh="onRefresh">
               <hmmodel v-for='items in item.postList'
                        :key="items.id"
-                       :post="items"></hmmodel>
+                       :post="items" @click="goArticle(items.id)"></hmmodel>
             </van-pull-refresh>
 
           </van-list>
@@ -120,6 +120,11 @@ export default {
 
       // 把后台返回的 id,页面的索引,以及当前页的数量push到 当前的category的postlist里面
       this.category[this.active].postList.push(...res1.data.data)
+    },
+
+    // 跳转当前栏目点的内容 ， 并把id传入到Article中
+    goArticle (event) {
+      this.$router.push({name: 'Article', params: {id: event}})
     }
   },
 

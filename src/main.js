@@ -34,6 +34,7 @@ import {
 } from 'vant'
 // import 'vant/lib/index.css'
 // import 'vant/lib/icon/local.css'
+import '@/assets/font/iconfont.css'
 
 Vue.use(Button)
   .use(Field)

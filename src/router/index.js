@@ -30,6 +30,11 @@ let router = new Router({
       path: '/register',
       name: 'Register',
       component: () => import('@/views/Register')
+    },
+    {
+      path: '/article/:id',
+      name: 'Article',
+      component: () => import('@/views/Article')
     }
   ]
 })
