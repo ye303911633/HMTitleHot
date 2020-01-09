@@ -19,14 +19,25 @@
         <div class="weChat borderBox iconfont"><span>&#xe620;</span> 微信</div>
       </div>
     </div>
+
+    <div class="follow-up">
+      <div class="noContent">
+        <h1>精彩跟帖</h1>
+        <p>暂无跟帖，抢占沙发</p>
+      </div>
+    </div>
+    <flooterNav :getColl="articleUser"></flooterNav>
   </div>
 </template>
 
 <script>
 import {getPostById, getFollows, unFollows, clickZan} from '@/apis/article.js'
-
+import flooterNav from '../components/flooterNav'
 export default {
   name: 'Article',
+  components: {
+    flooterNav
+  },
   data () {
     return {
       articleUser: {
@@ -35,23 +46,29 @@ export default {
     }
   },
   async mounted () {
+    console.log(this.$route.params.id)
     let res = await getPostById(this.$route.params.id)
+
     this.articleUser = res.data.data
+    console.log(this.articleUser)
   },
   methods: {
     async attentionBtn () {
+      // 判断是否登录
       if (localStorage.getItem('token')) {
+        // 登录的用户是否已关注，true为已关注，false为未关注
         if (this.articleUser.has_follow) {
-          let res = await unFollows(this.$route.params.id)
+          let res = await unFollows(this.articleUser.user.id)
           if (res.data.message === '取消关注成功') {
             this.$toast.fail(res.data.message)
             this.articleUser.has_follow = !this.articleUser.has_follow
           }
         } else {
-          let res = await getFollows(this.$route.params.id)
+          let res = await getFollows(this.articleUser.user.id)
           if (res.data.message === '已关注' || res.data.message === '关注成功') {
             this.$toast.fail(res.data.message)
             this.articleUser.has_follow = !this.articleUser.has_follow
+            console.log(this.articleUser.has_follow)
           }
         }
       } else {
@@ -73,8 +90,6 @@ export default {
         this.articleUser.like_length--
       }
     }
-
-    // 微信
 
   }
 
@@ -168,6 +183,23 @@ export default {
         font-size: 18px;
         }
       }
+    }
+  }
+
+  /*跟帖*/
+  .follow-up{
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    margin: 20px 0;
+    border-top: 3px solid #e4e4e4;
+    h1{
+      font-size: 18px;
+      padding: 10px 0;
+    }
+    p{
+      color: #969896;
+      font-size: 14px;
     }
   }
 

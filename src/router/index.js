@@ -35,6 +35,16 @@ let router = new Router({
       path: '/article/:id',
       name: 'Article',
       component: () => import('@/views/Article')
+    },
+    {
+      path: '/attention',
+      name: 'Attention',
+      component: () => import('@/views/Attention')
+    },
+    {
+      path: '/collect',
+      name: 'Collect',
+      component: () => import('@/views/Collect')
     }
   ]
 })

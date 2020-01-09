@@ -31,26 +31,33 @@
       </div>
     </div>
 
-    <van-collapse v-model="activeNames"
-                  accordion>
-      <van-collapse-item title="我的关注"
-                         value="关注的用户"
-                         icon="plus"
-                         right-icon="success"
-                         name="1">关注的用户
-      </van-collapse-item>
+    <van-cell-group>
+      <van-cell title="我的关注" value="关注的用户" is-link @click="goAttention" />
+      <van-cell title="我的跟帖" value="跟帖/回复" is-link/>
+      <van-cell title="我的收藏" value="文章/视频" is-link @click="goCollect" />
+      <van-cell title="设置" value="内容" is-link/>
+    </van-cell-group>
+<!--    <van-collapse v-model="activeNames"-->
+<!--                  accordion>-->
+<!--      <van-collapse-item title="我的关注"-->
+<!--                         value="关注的用户"-->
+<!--                         icon="plus"-->
+<!--                         right-icon="success"-->
+<!--                         name="1"-->
+<!--                        ><span @click="goAttention">关注的用户</span>-->
+<!--      </van-collapse-item>-->
 
-      <van-collapse-item title="我的跟帖"
-                         value="跟帖/回复"
-                         name="2">内容内容内容</van-collapse-item>
+<!--      <van-collapse-item title="我的跟帖"-->
+<!--                         value="跟帖/回复"-->
+<!--                         name="2">内容内容内容</van-collapse-item>-->
 
-      <van-collapse-item title="我的收藏"
-                         value="文章/视频"
-                         name="3">内内容内容内容容</van-collapse-item>
+<!--      <van-collapse-item title="我的收藏"-->
+<!--                         value="文章/视频"-->
+<!--                         name="3">内内容内容内容容</van-collapse-item>-->
 
-      <van-collapse-item title="设置"
-                         name="4">内容</van-collapse-item>
-    </van-collapse>
+<!--      <van-collapse-item title="设置"-->
+<!--                         name="4">内容</van-collapse-item>-->
+<!--    </van-collapse>-->
 
     <van-tabbar v-model="active"
                 active-color="#07c160"
@@ -118,12 +125,24 @@ export default {
       })
     },
 
+    // 跳转至编辑个人页面并传id
     editProfile () {
       this.$router.push({ name: 'Editprofile', query: { id: this.user.id } })
     },
 
+    // 回退
     onClickLeft () {
       this.$router.go(-1)
+    },
+
+    // 跳转关注页面
+    goAttention () {
+      this.$router.push({name: 'Attention'})
+    },
+
+    // 跳转收藏页面
+    goCollect () {
+      this.$router.push({name: 'Collect'})
     }
   }
 

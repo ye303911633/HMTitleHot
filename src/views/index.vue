@@ -73,7 +73,10 @@ export default {
       if (localStorage.getItem('token')) {
         this.$router.push({ path: `/personal/${JSON.parse(localStorage.getItem('Personal')).id}` })
       } else {
-        this.$router.push({ name: 'Login' })
+        this.$toast.fail('请先登录!')
+        setTimeout(() => {
+          this.$router.push({ name: 'Login' })
+        }, 1300)
       }
     },
     // 页面下拉刷新 加载数据
