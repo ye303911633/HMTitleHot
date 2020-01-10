@@ -64,3 +64,12 @@ export const getCommentList = (id, data) => {
     data
   })
 }
+
+// 发布评论
+export const postCommentList = (id, data) => {
+  return axios({
+    method: 'post',
+    url: `/post_comment/${id}`,
+    data
+  })
+}
