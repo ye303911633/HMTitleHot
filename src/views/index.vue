@@ -5,7 +5,8 @@
         <span class="iconfont iconnew"></span>
       </div>
 
-      <div class="search">
+      <div class="search"
+           @click="toSearch">
         <van-icon name="search" />
         <span>搜索</span>
       </div>
@@ -30,10 +31,12 @@
                     loading-text='玩命加载中..'
                     finished-text="没有更多了!"
                     @load="onLoad">
-            <van-pull-refresh v-model="item.isLoading" @refresh="onRefresh">
+            <van-pull-refresh v-model="item.isLoading"
+                              @refresh="onRefresh">
               <hmmodel v-for='items in item.postList'
                        :key="items.id"
-                       :post="items" @click="goArticle(items.id)"></hmmodel>
+                       :post="items"
+                       @click="goArticle(items.id)"></hmmodel>
             </van-pull-refresh>
 
           </van-list>
@@ -127,7 +130,12 @@ export default {
 
     // 跳转当前栏目点的内容 ， 并把id传入到Article中
     goArticle (event) {
-      this.$router.push({name: 'Article', params: {id: event}})
+      this.$router.push({ name: 'Article', params: { id: event } })
+    },
+
+    // 跳转至搜索页面
+    toSearch () {
+      this.$router.push({ name: 'Search' })
     }
   },
 

@@ -1,5 +1,6 @@
 import axios from '@/utils/axiosConfig'
 
+// 登录
 export const login = (data) => {
   return axios({
     method: 'post',
@@ -8,6 +9,7 @@ export const login = (data) => {
   })
 }
 
+// 注册
 export const register = (data) => {
   return axios({
     method: 'post',
