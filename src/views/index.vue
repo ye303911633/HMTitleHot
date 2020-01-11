@@ -20,10 +20,12 @@
     <div class="contentBox">
       <van-tabs v-model="active"
                 sticky
-                swipeable>
+                swipeable @resize="onResize">
+          <van-icon slot="nav-right" name="plus" @click="goTabs"/>
         <van-tab v-for="(item,index) in category"
                  :key="index"
                  :title="item.name">
+
           <van-list v-model="item.loading"
                     :offset='5'
                     :immediate-check='false'
@@ -136,6 +138,15 @@ export default {
     // 跳转至搜索页面
     toSearch () {
       this.$router.push({ name: 'Search' })
+    },
+
+    // 跳转至栏目
+    goTabs () {
+      this.$router.push({ name: 'Tabs' })
+    },
+
+    onResize (a) {
+      console.log(a)
     }
   },
 
@@ -144,11 +155,23 @@ export default {
     // this.id = JSON.parse(localStorage.getItem('token') || '{}').id
     // console.log(this.id)
 
-    // 调用getCate接口
-    let res = await getCate()
+    if (!localStorage.getItem('cateList')) {
+      // 调用getCate接口
+      let res = await getCate()
 
-    // 把后台拿到的数据 赋值到this.category
-    this.category = res.data.data
+      // 把后台拿到的数据 赋值到this.category
+      this.category = res.data.data
+    }
+    // 本地有栏目数据的时候 则直接从本地获取
+    this.category = JSON.parse(localStorage.getItem('cateList'))
+
+    /*
+    *   人为添加关注和头条, 先判断有无登录，从本地获取token，有则添加关注，没有则不添加， 有无登录都可以访问到头条内容
+    * */
+    this.category.unshift(...[{id: 999, name: '头条', is_top: 1}])
+    if (localStorage.getItem('token')) {
+      this.category.unshift(...[{id: 1, name: '关注', is_top: 1}])
+    }
 
     /*
     * 对数据进行改造，把拿到的数据 在后面继续追加 postlist pageIndex pageSize loading finished isLoading 属性
@@ -214,4 +237,21 @@ export default {
     font-size: 25px;
   }
 }
+/deep/.van-tabs{
+  .van-tab{
+    padding-right: 20px;
+  }
+  .van-icon{
+    font-size: 25px;
+    background: #fff;
+    position: fixed;
+    right: 0;
+    height: 40px;
+    line-height: 40px;
+  }
+  .van-tabs__line{
+    left: -8px;
+  }
+}
+
 </style>
