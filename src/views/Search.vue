@@ -46,24 +46,26 @@ export default {
   methods: {
     // 点击搜索
     async onSearch () {
-      let res = await postSearch({ keyword: this.value })
+      if (this.value.trim() !== '') {
+        let res = await postSearch({keyword: this.value})
 
-      if (res.data.data.length > 0) { // 判断输入的内容是否存在后台
-        // 搜索记录的本地存储
-        let arr = localStorage.getItem('cateList') ? JSON.parse(localStorage.getItem('cateList')) : []
+        if (res.data.data.length > 0) { // 判断输入的内容是否存在后台
+          // 搜索记录的本地存储
+          let arr = localStorage.getItem('cateList') ? JSON.parse(localStorage.getItem('cateList')) : []
 
-        arr.unshift(res.data.data)
-        localStorage.setItem('cateList', JSON.stringify(arr))
+          arr.unshift(res.data.data)
+          localStorage.setItem('cateList', JSON.stringify(arr))
+        }
+        // 历史记录的本地存储
+        this.history = localStorage.getItem('historyList') ? JSON.parse(localStorage.getItem('historyList')) : []
+        if (this.history.indexOf(this.value) === -1) {
+          this.history.unshift(this.value)
+          localStorage.setItem('historyList', JSON.stringify(this.history))
+        }
+        this.value = ''
+        this.cateList = JSON.parse(localStorage.getItem('cateList'))
+        this.history = JSON.parse(localStorage.getItem('historyList'))
       }
-      // 历史记录的本地存储
-      this.history = localStorage.getItem('historyList') ? JSON.parse(localStorage.getItem('historyList')) : []
-      if (this.history.indexOf(this.value) === -1) {
-        this.history.unshift(this.value)
-        localStorage.setItem('historyList', JSON.stringify(this.history))
-      }
-      this.value = ''
-      this.cateList = JSON.parse(localStorage.getItem('cateList'))
-      this.history = JSON.parse(localStorage.getItem('historyList'))
     }
   },
   mounted () {
